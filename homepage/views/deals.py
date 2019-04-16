@@ -32,6 +32,8 @@ def process_request(request):
         sub2 = str(sub1)[:end]
 
         itemList = sub2.split('}')  #this is a list of all the items!
+
+        bikes = []
         
         for item in itemList:
 
@@ -302,7 +304,9 @@ def process_request(request):
             #     if not hmod.Ad.objects.filter(price = Decimal(item.price), city = item.city, state = item.state, year = item.year, brand = item.brand, size = int(item.size)):
             #         item.save()   
             if recent_item.year != None and recent_item.brand != "other": 
-                recent_item.save()
+                #recent_item.save()
+                if recent_item.kbb_value != None:
+                    bikes.append(recent_item)
 
 
     year_param1 = None
@@ -338,7 +342,8 @@ def process_request(request):
 
     # old_items = hmod.Ad.objects.filter(year__gte = year_param, price__lte = price_param, size__gte = size_param)
 
-    deals = hmod.RecentAds.objects.all().exclude(kbb_value = None).order_by('difference')
+
+#deals = hmod.RecentAds.objects.all().exclude(kbb_value = None).order_by('difference')
 
 
     # my_titles = []
@@ -374,7 +379,8 @@ def process_request(request):
     context = {
         #'my_items' : my_items,
         'form': form,
-        'deals': deals,
+        #'deals': deals,
+        'bikes': bikes,
         # jscontext('my_titles'): my_titles,
         # jscontext('my_prices'): my_prices,
         # jscontext('my_years'): my_years,

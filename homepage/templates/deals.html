@@ -27,18 +27,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    %for i in range (len(deals)):  
-                        %if deals[i].difference < 0:
-                            <tr class="table-success clickable-row" data-href='https://classifieds.ksl.com/listing/${ deals[i].ksl_id }'>
+                    %for i in range (len(bikes)):  
+                        %if bikes[i].difference < 0:
+                            <tr class="table-success clickable-row" data-href='https://classifieds.ksl.com/listing/${ bikes[i].ksl_id }'>
                         %else:       
-                            <tr class='clickable-row' data-href='https://classifieds.ksl.com/listing/${ deals[i].ksl_id }'>
+                            <tr class='clickable-row' data-href='https://classifieds.ksl.com/listing/${ bikes[i].ksl_id }'>
                         %endif  
-                            <td>${ deals[i].year }</td>               
-                            <td>${ deals[i].make }</td>
-                            <td>${ deals[i].model }</td>               
-                            <td>${ deals[i].price }</td>
-                            <td>${ deals[i].kbb_value }</td>               
-                            <td>${ deals[i].difference }</td>
+                            <td>${ bikes[i].year }</td>               
+                            <td>${ bikes[i].make }</td>
+                            <td>${ bikes[i].model }</td>               
+                            <td>${ bikes[i].price }</td>
+                            <td>${ bikes[i].kbb_value }</td>               
+                            <td>${ bikes[i].difference }</td>
                         </tr>          
                     %endfor
                 </tbody>
