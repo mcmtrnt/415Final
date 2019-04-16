@@ -5,7 +5,7 @@ STOP_RENDERING = runtime.STOP_RENDERING
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 10
-_modified_time = 1555435593.653277
+_modified_time = 1555436623.101935
 _enable_loop = True
 _template_filename = 'C:/Users/Trent/scraper/homepage/templates/deals.html'
 _template_uri = 'deals.html'
@@ -30,13 +30,13 @@ def render_body(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
         __M_locals = __M_dict_builtin(pageargs=pageargs)
-        self = context.get('self', UNDEFINED)
-        def content():
-            return render_content(context._locals(__M_locals))
+        len = context.get('len', UNDEFINED)
         bikes = context.get('bikes', UNDEFINED)
         range = context.get('range', UNDEFINED)
+        self = context.get('self', UNDEFINED)
         request = context.get('request', UNDEFINED)
-        len = context.get('len', UNDEFINED)
+        def content():
+            return render_content(context._locals(__M_locals))
         __M_writer = context.writer()
         __M_writer('\r\n<meta http-equiv="refresh" content="15" >\r\n\r\n')
         if 'parent' not in context._data or not hasattr(context._data['parent'], 'content'):
@@ -52,17 +52,17 @@ def render_body(context,**pageargs):
 def render_content(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
-        self = context.get('self', UNDEFINED)
-        def content():
-            return render_content(context)
+        len = context.get('len', UNDEFINED)
         bikes = context.get('bikes', UNDEFINED)
         range = context.get('range', UNDEFINED)
+        self = context.get('self', UNDEFINED)
         request = context.get('request', UNDEFINED)
-        len = context.get('len', UNDEFINED)
+        def content():
+            return render_content(context)
         __M_writer = context.writer()
         __M_writer('\r\n\r\n    \r\n\r\n    <div class="alert alert-success">\r\n        <p><strong>Compare local ads to their Kelly Blue Book value and find the best deals!</strong></p>\r\n    </div>\r\n\r\n    <div class="row">\r\n        <div class="col-md-12">\r\n\r\n    <div class="content">\r\n')
         if request.user.is_authenticated:
-            __M_writer('            <table class="table table-striped table-bordered table-hover">\r\n                <caption style="caption-side: top">Click a row to be redirected to the item\'s ad</caption>\r\n                <thead class="thead-dark">\r\n                    <tr>\r\n                        <th>Year</th>\r\n                        <th>Make</th>\r\n                        <th>Model</th>\r\n                        <th>Price</th>\r\n                        <th>KBB</th>\r\n                        <th>Difference</th>\r\n                    </tr>\r\n                </thead>\r\n                <tbody>\r\n')
+            __M_writer('            <table class="table table-striped table-bordered table-hover">\r\n                <caption style="caption-side: top">Click a row to be redirected to the item\'s ad</caption>\r\n                <thead class="thead-dark">\r\n                    <tr>\r\n                        <!-- <th>Year</th> -->\r\n                        <th>Make</th>\r\n                        <th>Model</th>\r\n                        <th>Price</th>\r\n                        <th>KBB</th>\r\n                        <th>Difference</th>\r\n                    </tr>\r\n                </thead>\r\n                <tbody>\r\n')
             for i in range (len(bikes)):  
                 if bikes[i].difference < 0:
                     __M_writer('                            <tr class="table-success clickable-row" data-href=\'https://classifieds.ksl.com/listing/')
@@ -72,9 +72,9 @@ def render_content(context,**pageargs):
                     __M_writer("                            <tr class='clickable-row' data-href='https://classifieds.ksl.com/listing/")
                     __M_writer(django_mako_plus.ExpressionPostProcessor(self)( bikes[i].ksl_id ))
                     __M_writer("'>\r\n")
-                __M_writer('                            <td>')
+                __M_writer('                            <!-- <td>')
                 __M_writer(django_mako_plus.ExpressionPostProcessor(self)( bikes[i].year ))
-                __M_writer('</td>               \r\n                            <td>')
+                __M_writer('</td>                -->\r\n                            <td>')
                 __M_writer(django_mako_plus.ExpressionPostProcessor(self)( bikes[i].make ))
                 __M_writer('</td>\r\n                            <td>')
                 __M_writer(django_mako_plus.ExpressionPostProcessor(self)( bikes[i].model ))
