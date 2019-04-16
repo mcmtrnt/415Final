@@ -5,7 +5,7 @@ STOP_RENDERING = runtime.STOP_RENDERING
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 10
-_modified_time = 1555432356.6320746
+_modified_time = 1555434312.7251556
 _enable_loop = True
 _template_filename = 'C:/Users/Trent/scraper/homepage/templates/calculator.html'
 _template_uri = 'calculator.html'
@@ -30,11 +30,11 @@ def render_body(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
         __M_locals = __M_dict_builtin(pageargs=pageargs)
-        value = context.get('value', UNDEFINED)
         def content():
             return render_content(context._locals(__M_locals))
         form = context.get('form', UNDEFINED)
         self = context.get('self', UNDEFINED)
+        value = context.get('value', UNDEFINED)
         __M_writer = context.writer()
         __M_writer('\r\n\r\n')
         if 'parent' not in context._data or not hasattr(context._data['parent'], 'content'):
@@ -49,15 +49,15 @@ def render_body(context,**pageargs):
 def render_content(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
-        value = context.get('value', UNDEFINED)
         def content():
             return render_content(context)
         form = context.get('form', UNDEFINED)
         self = context.get('self', UNDEFINED)
+        value = context.get('value', UNDEFINED)
         __M_writer = context.writer()
         __M_writer('\r\n\r\n    <div class="container-fluid">\r\n        <div class="row content">\r\n            <div class="col-sm-3">\r\n        \r\n            </div>\r\n        \r\n            <div class="col-sm-6">\r\n                <div class="content">\r\n                    <div class="wrapper">\r\n                        <div id="formContent">\r\n                            <form method="POST">\r\n                                <div><p>Enter Dirt Bike Information</p></div>\r\n                                ')
         __M_writer(django_mako_plus.ExpressionPostProcessor(self)(form.as_table()))
-        __M_writer('\r\n                                <input type="submit" value="Predict">\r\n                                \r\n                                <div><p></p></div>\r\n                                \r\n                            </form> \r\n                        </div>\r\n                    </div>\r\n                </div>\r\n\r\n            </div>\r\n\r\n            <div class="col-sm-3">\r\n                <h4>Prediction:</h4>\r\n                <p>We recommend you price your bike at <strong>$')
+        __M_writer('\r\n                                <input type="submit" value="Predict">\r\n                                \r\n                                <div><p></p></div>\r\n                                \r\n                            </form> \r\n                        </div>\r\n                    </div>\r\n                </div>\r\n\r\n            </div>\r\n\r\n            <div class="col-sm-3">\r\n                <h4>Prediction:</h4>\r\n                <p>We recommend you price your bike at <strong style="color:green">$')
         __M_writer(django_mako_plus.ExpressionPostProcessor(self)( value ))
         __M_writer('</strong></p>\r\n\r\n                \r\n\r\n            </div>\r\n\r\n        </div>\r\n    </div>\r\n\r\n\r\n\r\n')
         return ''

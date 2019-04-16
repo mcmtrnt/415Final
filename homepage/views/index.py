@@ -2,7 +2,6 @@ from django.conf import settings
 from django_mako_plus import view_function, jscontext
 from bs4 import BeautifulSoup
 import requests
-import html5lib
 from homepage import models as hmod
 import re
 from datetime import datetime, timedelta  
@@ -10,7 +9,6 @@ from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
 import time
-import smtplib
 from decimal import Decimal
 from django.contrib.auth.models import User
 from django.contrib.auth import models as pmod
