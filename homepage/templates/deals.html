@@ -1,0 +1,63 @@
+<%inherit file="base.htm" />
+<meta http-equiv="refresh" content="15" >
+
+<%block name="content">
+
+    
+
+    <div class="alert alert-success">
+        <p><strong>Compare local ads to their Kelly Blue Book value and find the best deals!</strong></p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+
+    <div class="content">
+        %if request.user.is_authenticated:
+            <table class="table table-striped table-bordered table-hover">
+                <caption style="caption-side: top">Click a row to be redirected to the item's ad</caption>
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Year</th>
+                        <th>Make</th>
+                        <th>Model</th>
+                        <th>Price</th>
+                        <th>KBB</th>
+                        <th>Difference</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    %for i in range (len(deals)):  
+                        %if deals[i].difference < 0:
+                            <tr class="table-success clickable-row" data-href='https://classifieds.ksl.com/listing/${ deals[i].ksl_id }'>
+                        %else:       
+                            <tr class='clickable-row' data-href='https://classifieds.ksl.com/listing/${ deals[i].ksl_id }'>
+                        %endif  
+                            <td>${ deals[i].year }</td>               
+                            <td>${ deals[i].make }</td>
+                            <td>${ deals[i].model }</td>               
+                            <td>${ deals[i].price }</td>
+                            <td>${ deals[i].kbb_value }</td>               
+                            <td>${ deals[i].difference }</td>
+                        </tr>          
+                    %endfor
+                </tbody>
+
+            </table>
+
+        %else:
+            You must be logged in to view deals
+            <a class="btn btn-primary" href="/homepage/login/" role="button">Login</a>
+        %endif
+
+    </div>
+
+</div>
+
+<!-- <div class="col-md-2">Hi</div> -->
+
+</div>
+
+
+
+</%block>

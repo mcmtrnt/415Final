@@ -1,0 +1,22 @@
+<%inherit file="base.htm" />
+<meta http-equiv="refresh" content="15" >
+
+<%block name="content">
+    
+
+    <div class="container">
+        <h1 class="display-4">Get automatic KBB comparisons!</h1>
+        <p class="lead">Use this site to view local dirt bike ads and their Kelly Blue Book value and find the best deals!</p>
+        %if request.user.is_authenticated:
+        <div>
+            <a class="btn btn-primary btn-embossed" href="/homepage/main/" role="button">Get Started</a>
+        </div>
+        %else:          
+        <div>
+            <a class="btn btn-primary" href="/homepage/login/" role="button">Login</a>
+        </div>
+        %endif   
+    </div>
+
+    
+</%block>

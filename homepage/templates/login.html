@@ -1,0 +1,30 @@
+<%inherit file="base.htm" />
+
+<%block name="content">
+<div class="content">
+    <div class="wrapper">
+        <div id="formContent">
+          <!-- Tabs Titles -->
+      
+            <div>
+                <p></p>
+            </div>
+      
+          <!-- Login Form -->
+          
+          <form method="POST">
+            ${form.as_table()}
+            <input type="submit" value="Log In">
+          </form>
+
+              
+          <!-- Remind Password -->
+          <div id="formFooter">
+            <a class="underlineHover" href="/homepage/signup/">Sign Up</a>
+          </div>
+      
+        </div>
+    </div>
+</div>
+
+</%block>
