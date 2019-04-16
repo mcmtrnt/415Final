@@ -5,7 +5,7 @@ STOP_RENDERING = runtime.STOP_RENDERING
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 10
-_modified_time = 1555431478.1485362
+_modified_time = 1555432908.4423246
 _enable_loop = True
 _template_filename = 'C:/Users/Trent/scraper/homepage/templates/base.htm'
 _template_uri = 'base.htm'
@@ -19,10 +19,10 @@ def render_body(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
         __M_locals = __M_dict_builtin(pageargs=pageargs)
-        self = context.get('self', UNDEFINED)
         request = context.get('request', UNDEFINED)
         def content():
             return render_content(context._locals(__M_locals))
+        self = context.get('self', UNDEFINED)
         __M_writer = context.writer()
         __M_writer('<!DOCTYPE html>\r\n<html>\r\n    <meta charset="UTF-8">\r\n    <head>\r\n\r\n        <title>Dirt Bike Deals</title>\r\n        <link rel="icon" href="/static/homepage/media/favicon.ico/">\r\n\r\n')
         __M_writer('        <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>\r\n\r\n        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">\r\n        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>\r\n\r\n\r\n        \r\n        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>\r\n\r\n')
@@ -33,7 +33,7 @@ def render_body(context,**pageargs):
             __M_writer('                    <li class="nav-item active">\r\n                        <a class="btn btn-outline-primary" href="/homepage/deals/">Deals<span class="sr-only">(current)</span></a>\r\n                    </li>\r\n')
         __M_writer('\r\n')
         if request.user.has_perm('homepage.view_ad'):
-            __M_writer('                        <li class="nav-item active">\r\n                            <a class="btn btn-outline-primary" href="/homepage/calculator/">Price my bike<span class="sr-only">(current)</span></a>\r\n                        </li>\r\n')
+            __M_writer('                        <li class="nav-item active">\r\n                            <a class="btn btn-outline-primary" href="/homepage/calculator/">Price my bike<span class="sr-only">(current)</span></a>\r\n                        </li>\r\n                        \r\n                        <li class="nav-item active">\r\n                            <a class="btn btn-outline-primary" href="/homepage/visualizations/">Visualizations<span class="sr-only">(current)</span></a>\r\n                        </li>\r\n')
         else:
             __M_writer('                        <li class="nav-item active">\r\n                            <a class="btn btn-outline-primary" href="/homepage/checkout/">Upgrade to pro account<span class="sr-only">(current)</span></a>\r\n                        </li>\r\n')
         __M_writer('\r\n                    <div>\r\n')
@@ -66,6 +66,6 @@ def render_content(context,**pageargs):
 
 """
 __M_BEGIN_METADATA
-{"filename": "C:/Users/Trent/scraper/homepage/templates/base.htm", "uri": "base.htm", "source_encoding": "utf-8", "line_map": {"18": 0, "27": 2, "28": 11, "29": 21, "30": 22, "31": 22, "32": 33, "33": 34, "34": 38, "35": 39, "36": 40, "37": 43, "38": 44, "39": 48, "40": 50, "41": 51, "42": 54, "43": 55, "44": 59, "49": 69, "55": 67, "61": 67, "67": 61}}
+{"filename": "C:/Users/Trent/scraper/homepage/templates/base.htm", "uri": "base.htm", "source_encoding": "utf-8", "line_map": {"18": 0, "27": 2, "28": 11, "29": 21, "30": 22, "31": 22, "32": 33, "33": 34, "34": 38, "35": 39, "36": 40, "37": 47, "38": 48, "39": 52, "40": 54, "41": 55, "42": 58, "43": 59, "44": 63, "49": 73, "55": 71, "61": 71, "67": 61}}
 __M_END_METADATA
 """

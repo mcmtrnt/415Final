@@ -301,7 +301,7 @@ def process_request(request):
 
 
             if item.year != None and item.brand != "other": 
-                if not hmod.Ad.objects.filter(price = item.price, city = item.city, state = item.state, year = item.year, brand = item.brand, size = item.size):
+                if not hmod.Ad.objects.filter(price = Decimal(item.price), city = item.city, state = item.state, year = item.year, brand = item.brand, size = item.size):
                     item.save()   
             if recent_item.year != None and recent_item.brand != "other": 
                 recent_item.save()
