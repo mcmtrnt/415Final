@@ -33,7 +33,7 @@ def process_request(request):
 
         itemList = sub2.split('}')  #this is a list of all the items!
 
-        bikes = []
+        # bikes = []
         
         for item in itemList:
 
@@ -135,85 +135,87 @@ def process_request(request):
             recent_item.favorited = favorited
             recent_item.description = description
 
-            #convert title to lowercase before checking!! duh dude                    
-            if 'CRF' in title or 'crf' in title or 'Crf' in title:
+            #convert title to lowercase before checking!! duh dude
+            title = title.lower()
+
+            if 'crf' in title:
                 item.brand = "CRF"
                 recent_item.brand = "CRF"
                 make = "honda"
-            elif 'CR' in title or 'Cr' in title or 'cr' in title: #this is case sensitive...
+            elif 'cr' in title: 
                 item.brand = "CR"
                 recent_item.brand = "CR"
                 make = "honda"
-            elif 'XR' in title or 'xr' in title or 'Xr' in title:
+            elif 'xr' in title:
                 item.brand = "XR"
                 recent_item.brand = "XR"
                 make = "honda"
-            elif 'Honda' in title or 'honda' in title:   
+            elif 'honda' in title:   
                 item.brand = 'honda'
                 recent_item.brand = 'honda' 
                 make = "honda"
                       
-            elif 'YZ' in title or 'Yz' in title or 'yz' in title:
+            elif 'yz' in title:
                 item.brand = "YZ"
                 recent_item.brand = "YZ"
                 make = "yamaha"
-            elif 'TTR' in title or 'TT-R' in title or 'ttr' in title or 'Ttr' in title  or 'TT R' in title  or 'tt r' in title:
+            elif 'tt-r' in title or 'ttr' in title or 'tt r' in title:
                 item.brand = "TTR"
                 recent_item.brand = "TTR"
                 make = "yamaha"
-            elif 'WR' in title or 'Wr' in title or 'wr' in title:
+            elif 'wr' in title:
                 item.brand = "WR"
                 recent_item.brand = "WR"
                 make = "yamaha"
-            elif 'PW' in title or 'pw' in title or 'Pw' in title:
+            elif 'pw' in title:
                 item.brand = "PW"
                 recent_item.brand = "PW"
                 make = "yamaha"
-            elif 'TW' in title or 'tw' in title or 'Tw' in title:
+            elif 'tw' in title:
                 item.brand = "TW"
                 recent_item.brand = "TW"
                 make = "yamaha"
-            elif 'Yamaha' in title or 'yamaha' in title:
+            elif 'yamaha' in title:
                 item.brand = "yamaha"
                 recent_item.brand = "yamaha"
                 make = "yamaha"
 
-            elif 'KTM' in title or 'Ktm' in title or 'ktm' in title:
+            elif 'ktm' in title:
                 item.brand = "ktm"
                 recent_item.brand = "ktm"
                 make = "ktm"
                  
-            elif 'DR-Z' in title or 'DRZ' in title or 'dr-z' in title or 'drz' in title or 'Drz' in title:
+            elif 'dr-z' in title or 'drz' in title :
                 item.brand = "DR-Z"
                 recent_item.brand = "DR-Z"
                 make = "suzuki"
-            elif 'RMZ' in title or 'Rmz' in title or 'rmz' in title:
+            elif 'rmz' in title:
                 item.brand = "RM-Z"
                 recent_item.brand = "RM-Z"
                 make = "suzuki"
-            elif 'RM' in title or 'Rm' in title or 'rm' in title:
+            elif 'rm' in title:
                 item.brand = "RM"
                 recent_item.brand = "RM"
                 make = "suzuki"
-            elif 'Suzuki' in title or 'suzuki' in title:
+            elif 'suzuki' in title:
                 item.brand = "suzuki"
                 recent_item.brand = "suzuki"
                 make = "suzuki"
            
-            elif 'KLX' in title or 'Klx' in title or 'klx' in title:
+            elif 'klx' in title:
                 item.brand = "KLX"
                 recent_item.brand = "KLX"
                 make = "kawasaki"
-            elif 'KX' in title or 'kx' in title or 'Kx' in title:
+            elif 'kx' in title:
                 item.brand = "KX"
                 recent_item.brand = "KX"
                 make = "kawasaki"
-            elif 'Kawasaki' in title or 'kawasaki' in title:
+            elif 'kawasaki' in title:
                 item.brand = "kawasaki"
                 recent_item.brand = "kawasaki"
                 make = "kawasaki"
 
-            elif 'Husqvarna' in title or 'husqvarna' in title: 
+            elif 'husqvarna' in title: 
                 item.brand = "husqvarna"
                 recent_item.brand = "husqvarna"
                 make = None
@@ -300,117 +302,24 @@ def process_request(request):
                     recent_item.difference = Decimal(price) - Decimal(kbb_value)
 
 
-            # if item.year != None and item.brand != "other": 
-            #     if not hmod.Ad.objects.filter(price = Decimal(item.price), city = item.city, state = item.state, year = item.year, brand = item.brand, size = int(item.size)):
-            #         item.save()   
+            if item.year != None and item.brand != "other": 
+                if not hmod.Ad.objects.filter(price = Decimal(item.price), city = item.city, state = item.state, year = item.year, brand = item.brand, size = int(item.size)):
+                    item.save()   
             if recent_item.year != None and recent_item.brand != "other": 
-                #recent_item.save()
-                if recent_item.kbb_value != None:
-                    bikes.append(recent_item)
+                recent_item.save()
+                # if recent_item.kbb_value != None:
+                #     bikes.append(recent_item)
 
 
-    year_param1 = None
-    price_param1 = None
-    size_param1 = None
+    deals = hmod.RecentAds.objects.all().exclude(kbb_value = None).order_by('difference')
 
-    if request.method == 'POST':  
-        form = SearchForm(request.POST)
-        if form.is_valid():
-            year_param1 = form.cleaned_data.get('year')
-            price_param1 = form.cleaned_data.get('price')
-            size_param1 = form.cleaned_data.get('size')           
-    else:
-        form = SearchForm()
-
-    if year_param1 is None:
-        year_param = 2001
-    else:
-        year_param = year_param1
-
-    if price_param1 is None:
-        price_param = 1200
-    else:
-        price_param = price_param1
-
-    if size_param1 is None:
-        size_param = 50
-    else:
-        size_param = size_param1
-
-    
-    # my_items = hmod.RecentAds.objects.filter(year__gte = year_param, price__lte = price_param, size__gte = size_param)
-
-    # old_items = hmod.Ad.objects.filter(year__gte = year_param, price__lte = price_param, size__gte = size_param)
-
-
-#deals = hmod.RecentAds.objects.all().exclude(kbb_value = None).order_by('difference')
-
-
-    # my_titles = []
-    # my_prices = []
-    # my_years = []
-    # my_cities = []
-    # my_sizes = []
-
-    # for x in my_items:
-    #     my_titles.append(x.title)
-    #     my_prices.append(x.price)
-    #     my_years.append(x.year)
-    #     my_cities.append(x.city)
-    #     my_sizes.append(x.size)
-
-    # old_titles = []
-    # old_prices = []
-    # old_years = []
-    # old_cities = []
-    # old_sizes = []
-
-    # for x in old_items:
-    #     old_titles.append(x.title)
-    #     old_prices.append(x.price)
-    #     old_years.append(x.year)
-    #     old_cities.append(x.city)
-    #     old_sizes.append(x.size)
-
-    # some_text = 'Test'
-
-    # send(some_text)
 
     context = {
-        #'my_items' : my_items,
-        'form': form,
-        #'deals': deals,
-        'bikes': bikes,
-        # jscontext('my_titles'): my_titles,
-        # jscontext('my_prices'): my_prices,
-        # jscontext('my_years'): my_years,
-        # jscontext('my_cities'): my_cities,
-        # jscontext('my_sizes'): my_sizes,
-
-        # jscontext('old_titles'): old_titles,
-        # jscontext('old_prices'): old_prices,
-        # jscontext('old_years'): old_years,
-        # jscontext('old_cities'): old_cities,
-        # jscontext('old_sizes'): old_sizes,
+        'deals': deals,
+        # 'bikes': bikes,
     }
     return request.dmp.render('deals.html', context)
 
-
-class SearchForm(forms.Form):
-    year = forms.IntegerField(label='Minimum Year')
-    #brand = forms.CharField(label='Brand')
-    price = forms.DecimalField(label='Maximum Price')
-    size = forms.IntegerField(label='Minimum Size')
-
-    def clean(self):
-        if int(self.cleaned_data.get('year')) < 1920 or int(self.cleaned_data.get('year')) > 2020:
-            raise forms.ValidationError("Select an appropriate year")
-        if int(self.cleaned_data.get('size')) < 50 or int(self.cleaned_data.get('size')) > 650:
-            raise forms.ValidationError("Select an appropriate size")
-        if int(self.cleaned_data.get('price')) is None:
-            raise forms.ValidationError("Please enter a price")
-
-        return self.cleaned_data
 
 
 def find_model(make, my_title, my_brand): #description
@@ -539,7 +448,11 @@ def find_model(make, my_title, my_brand): #description
             else:
                 return '150f'
         else:
-            return '125'
+            return '150'
+    elif '140' in title:
+        if(make == 'kawasaki'):           
+                return '140a'
+        return '140'
     elif '125r' in title or '125 r' in title:
         return '125r'
     elif '125f' in title or '125 f' in title:
@@ -742,32 +655,4 @@ def find_size(sub):
         return 0      
 
 
-
-
-# <!-- 
-#         <form method="POST">
-#             <table >
-#                 ${ form }                    
-#             </table>   
-#             <input type="submit" value="Search"> 
-#         </form>
-
-#         <br>
-#         <br>
-
-#         <table>
-#             <tr>
-#                 <th>Title</th>               
-#                 <th>Price</th>
-#             </tr>
-#             %for i in range (len(my_items)):            
-#                 <tr>
-#                     <td>${ my_items[i].title }</td>               
-#                     <td>${ my_items[i].price }</td>
-#                 </tr>          
-#             %endfor
-#         </table>
-
-#         <br/>
-#         <br /> -->
 

@@ -106,13 +106,24 @@ WSGI_APPLICATION = 'scraper.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'ksl',
+#         'USER': 'mastertrent',
+#         'PASSWORD': 'Team54thewin',
+#         'HOST': 'intex2-team1-5.cxposhxlcsae.us-west-1.rds.amazonaws.com',
+#         'PORT': '',
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ksl',
-        'USER': 'mastertrent',
-        'PASSWORD': 'Team54thewin',
-        'HOST': 'intex2-team1-5.cxposhxlcsae.us-west-1.rds.amazonaws.com',
+        'NAME': 'scraper',
+        'USER': 'mcmtrnt',
+        'PASSWORD': 'Chocolate1',
+        'HOST': 'dbd.c6tvlnpvgqmk.us-east-2.rds.amazonaws.com',
         'PORT': '',
     }
 }
