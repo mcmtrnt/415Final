@@ -28,7 +28,7 @@ SECRET_KEY = 'cet9t4*(7o7ss%crq)%_3f(%p^^!)!&=$_a1w2olijy=n(+m87'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.0', '18.222.138.188']
 
 # STRIPE_PUBLIC_KEY = "pk_test_CNCYl3Rg3Tfg0QbgsyL9wTAg00kCZhOvs5"
 # STRIPE_SECRET_KEY = "sk_test_KRTXzuhlafgFkjyxb2zDIGGw00ScFtCMAa"
@@ -125,7 +125,7 @@ DATABASES = {
         'USER': 'mcmtrnt',
         'PASSWORD': 'Chocolate1',
         'HOST': 'dbd.c6tvlnpvgqmk.us-east-2.rds.amazonaws.com',
-        'PORT': '',
+        'PORT': '5432',
     }
 }
 
@@ -169,7 +169,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     # SECURITY WARNING: this next line must be commented out at deployment
-    BASE_DIR,
+    # BASE_DIR,
 )
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
