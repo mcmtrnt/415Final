@@ -26,8 +26,12 @@
   }
   
   li {
-      color: red;
+      color: red;   
   }
+
+  /* ul{
+    list-style-type: none;
+  } */
   
   
   /* STRUCTURE */

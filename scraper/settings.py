@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 import shutil
-# import stripe
+import stripe
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,11 +28,11 @@ SECRET_KEY = 'cet9t4*(7o7ss%crq)%_3f(%p^^!)!&=$_a1w2olijy=n(+m87'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.0', '18.222.138.188']
+ALLOWED_HOSTS = ['127.0.0.0', '18.222.138.188', '127.0.0.1']
 
-# STRIPE_PUBLIC_KEY = "pk_test_CNCYl3Rg3Tfg0QbgsyL9wTAg00kCZhOvs5"
-# STRIPE_SECRET_KEY = "sk_test_KRTXzuhlafgFkjyxb2zDIGGw00ScFtCMAa"
-# stripe.api_key = STRIPE_SECRET_KEY
+STRIPE_PUBLIC_KEY = "pk_test_CNCYl3Rg3Tfg0QbgsyL9wTAg00kCZhOvs5"
+STRIPE_SECRET_KEY = "sk_test_KRTXzuhlafgFkjyxb2zDIGGw00ScFtCMAa"
+stripe.api_key = STRIPE_SECRET_KEY
 
 # Application definition
 
@@ -169,7 +169,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     # SECURITY WARNING: this next line must be commented out at deployment
-    # BASE_DIR,
+    BASE_DIR,
 )
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 

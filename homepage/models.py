@@ -49,6 +49,12 @@ class RecentAds(models.Model):
 
 class Pros(models.Model):
     user_id = models.TextField(null=True, default=None) 
+    stripe_customer_id = models.TextField(null=True, default=None)
     charge_id = models.TextField(null=True, default=None) 
+    subscription_id = models.TextField(null=True, default=None)
+    
+class Subscription(models.Model):
+    product_id = models.TextField(null=True, default=None)
+    plan_id = models.TextField(null=True, default=None)
     
 

@@ -12,6 +12,7 @@ import time
 from decimal import Decimal
 from django.contrib.auth.models import User
 from django.contrib.auth import models as pmod
+import stripe
 
 
 @view_function
@@ -20,7 +21,7 @@ def process_request(request):
     #print(request.user.id)
 
     # g1 = pmod.Group()
-    # g1.name = "Regular"
+    # g1.name = "Pro"
     # g1.save()
 
     # g1= pmod.Group.objects.get(name='Pro')
@@ -52,7 +53,28 @@ def process_request(request):
     # user.groups.add(pmod.Group.objects.get(name='Regular'))
 
     # user.save()
+
+
+    # product = stripe.Product.create(
+    #     name='Dirt Bike Deals Subscription',
+    #     type='service',
+    # )
     
+    # plan = stripe.Plan.create(
+    #     nickname="Standard Monthly",
+    #     product= product['id'],
+    #     amount=2000,
+    #     currency="usd",
+    #     interval="month",
+    #     usage_type="licensed",
+    # )
+
+    # subscription = hmod.Subscription()
+    # subscription.product_id = product['id']
+    # subscription.plan_id = plan['id']  
+    # subscription.save()
+
+
 
     context = {
 

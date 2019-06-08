@@ -21,14 +21,15 @@ def process_request(request):
                 username=form.cleaned_data.get('username'),     
                 password=form.cleaned_data.get('password'))
 
-            user.groups.add(pmod.Group.objects.get(name='Regular'))    #add the user to the basic group
+            # a regular group is not necessary
+            #user.groups.add(pmod.Group.objects.get(name='Regular'))    #add the user to the basic group
 
             user.save()
 
             user = authenticate(username=form.cleaned_data.get('username'), password=form.cleaned_data.get('password'))
             login(request, user)
 
-            return HttpResponseRedirect('/homepage/receipt/') #redirect to deals page
+            return HttpResponseRedirect('/homepage/success/') #redirect to success page
     else:
         form = LoginForm()
     return request.dmp.render('signup.html', {'form':form})
@@ -41,5 +42,7 @@ class LoginForm(forms.Form):
     password = forms.CharField(label='', widget=forms.PasswordInput(attrs={'placeholder': 'password'}))
     
     def clean(self):
-        print("signup")
+        user = pmod.User.objects.filter(username = self.cleaned_data.get('username'))
+        if len(user) > 0:
+            raise forms.ValidationError("That username is already taken")
         return self.cleaned_data

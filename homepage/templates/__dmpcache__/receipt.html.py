@@ -5,7 +5,7 @@ STOP_RENDERING = runtime.STOP_RENDERING
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 10
-_modified_time = 1555038874.9804642
+_modified_time = 1559958575.778155
 _enable_loop = True
 _template_filename = 'C:/Users/Trent/scraper/homepage/templates/receipt.html'
 _template_uri = 'receipt.html'
@@ -49,7 +49,7 @@ def render_content(context,**pageargs):
         def content():
             return render_content(context)
         __M_writer = context.writer()
-        __M_writer('\r\n    <h2>Receipt</h2>\r\n    <p>Thank you for your purchase! You now have access to the pro account!</p>\r\n    <a class="btn btn-outline-primary" href="/homepage/deals/">View Deals<span class="sr-only">(current)</span></a>\r\n\r\n')
+        __M_writer('\r\n    <h2>Receipt</h2>\r\n    <p>Thank you for your purchase! You now have access to view deals!</p>\r\n    <a class="btn btn-outline-primary" href="/homepage/deals/">View Deals<span class="sr-only">(current)</span></a>\r\n\r\n')
         return ''
     finally:
         context.caller_stack._pop_frame()

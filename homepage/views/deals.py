@@ -10,315 +10,332 @@ from django.core import validators
 from django.core.exceptions import ValidationError
 import time
 from decimal import Decimal
+from django.http import HttpResponseRedirect
 
 
 @view_function
 def process_request(request):
+
+    if request.user.is_authenticated:
        
-    hmod.RecentAds.objects.all().delete()
+        hmod.RecentAds.objects.all().delete()
 
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
-    }
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
+        }
 
-    with requests.Session() as s:
-        r = s.get('https://classifieds.ksl.com/s/Recreational+Vehicles/Motorcycles,+Dirt+Bikes+Used', headers=headers)
-        soup = BeautifulSoup(r.content, 'html.parser')
+        with requests.Session() as s:
+            r = s.get('https://classifieds.ksl.com/s/Recreational+Vehicles/Motorcycles,+Dirt+Bikes+Used', headers=headers)
+            soup = BeautifulSoup(r.content, 'html.parser')
 
-        start = str(soup).find('listings:')
-        sub1 = str(soup)[start + 11:]
+            start = str(soup).find('listings:')
+            sub1 = str(soup)[start + 11:]
 
-        end = str(sub1).find('}]')
-        sub2 = str(sub1)[:end]
+            end = str(sub1).find('}]')
+            sub2 = str(sub1)[:end]
 
-        itemList = sub2.split('}')  #this is a list of all the items!
+            itemList = sub2.split('}')  #this is a list of all the items!
 
-        # bikes = []
-        
-        for item in itemList:
-
-            start1 = str(item).find('{"id":')
-            s = str(item)[start1:]
-            end1 = str(item).find('memberId":')
-            ksl_id = str(item)[start1 + 6 : end1 - 2]
+            # bikes = []
             
-            start1 = str(item).find('displayTime":')
-            s = str(item)[start1:]
-            end1 = str(item).find('modifyTime":')
-            displayTime = str(item)[start1 + 14 : end1 - 4]
+            for item in itemList:
 
-            start1 = str(item).find('category":')
-            s = str(item)[start1:]
-            end1 = str(item).find('subCategory":')
-            category = str(item)[start1 + 11 : end1 - 3]
-
-            start1 = str(item).find('subCategory":')
-            s = str(item)[start1:]
-            end1 = str(item).find('price":')
-            subCategory = str(item)[start1 + 14 : end1 - 3]
-
-            start1 = str(item).find('price":')
-            s = str(item)[start1:]
-            end1 = str(item).find('title":')
-            price = str(item)[start1 + 7 : end1 - 2]
-
-            start1 = str(item).find('title":')
-            s = str(item)[start1:]
-            end1 = str(item).find('description":')
-            title = str(item)[start1 + 8 : end1 - 3]    
-
-            start1 = str(item).find('city":')
-            s = str(item)[start1:]
-            end1 = str(item).find('state":')
-            city = str(item)[start1 + 7 : end1 - 3]
-
-            start1 = str(item).find('state":')
-            s = str(item)[start1:]
-            end1 = str(item).find('zip":')
-            state = str(item)[start1 + 8 : end1 - 3]
-
-            start1 = str(item).find('name":')
-            s = str(item)[start1:]
-            end1 = str(item).find('homePhone":')
-            name = str(item)[start1 + 7 : end1 - 3]
-
-            start1 = str(item).find('favorited":')
-            s = str(item)[start1:]
-            end1 = str(item).find('listingType":')
-            favorited = str(item)[start1 + 11 : end1 - 2]
-
-            start1 = str(item).find('description":')
-            s = str(item)[start1:]
-            end1 = str(item).find('marketType":')
-            description = str(item)[start1 + 14 : end1 - 3]
-            
-            if str(item).find('cellPhone":'):
-                start1 = str(item).find('cellPhone":')
+                start1 = str(item).find('{"id":')
                 s = str(item)[start1:]
-                end1 = str(item).find('email":')
-                cellPhone = str(item)[start1 + 12 : end1 - 3]
-            else:
-                cellPhone = None
-            # if len(cellPhone) > 14:
-            #     cellPhone = None
-
-            start1 = str(item).find('description":')
-            s = str(item)[start1:]
-            end1 = str(item).find('marketType":')
-            description = str(item)[start1 + 14 : end1 - 3]
-            
-            item = hmod.Ad()
-            item.ksl_id = ksl_id
-            item.displayTime = displayTime
-            item.category = category
-            item.subCategory = subCategory
-            item.price = price
-            item.title = title
-            item.city = city
-            item.state = state
-            item.name = name
-            item.cellPhone = cellPhone
-            item.favorited = favorited
-            item.description = description
-
-            recent_item = hmod.RecentAds()
-            recent_item.ksl_id = ksl_id
-            recent_item.displayTime = displayTime
-            recent_item.category = category
-            recent_item.subCategory = subCategory
-            recent_item.price = price
-            recent_item.title = title
-            recent_item.city = city
-            recent_item.state = state
-            recent_item.name = name
-            recent_item.cellPhone = cellPhone
-            recent_item.favorited = favorited
-            recent_item.description = description
-
-            #convert title to lowercase before checking!! duh dude
-            title = title.lower()
-
-            if 'crf' in title:
-                item.brand = "CRF"
-                recent_item.brand = "CRF"
-                make = "honda"
-            elif 'cr' in title: 
-                item.brand = "CR"
-                recent_item.brand = "CR"
-                make = "honda"
-            elif 'xr' in title:
-                item.brand = "XR"
-                recent_item.brand = "XR"
-                make = "honda"
-            elif 'honda' in title:   
-                item.brand = 'honda'
-                recent_item.brand = 'honda' 
-                make = "honda"
-                      
-            elif 'yz' in title:
-                item.brand = "YZ"
-                recent_item.brand = "YZ"
-                make = "yamaha"
-            elif 'tt-r' in title or 'ttr' in title or 'tt r' in title:
-                item.brand = "TTR"
-                recent_item.brand = "TTR"
-                make = "yamaha"
-            elif 'wr' in title:
-                item.brand = "WR"
-                recent_item.brand = "WR"
-                make = "yamaha"
-            elif 'pw' in title:
-                item.brand = "PW"
-                recent_item.brand = "PW"
-                make = "yamaha"
-            elif 'tw' in title:
-                item.brand = "TW"
-                recent_item.brand = "TW"
-                make = "yamaha"
-            elif 'yamaha' in title:
-                item.brand = "yamaha"
-                recent_item.brand = "yamaha"
-                make = "yamaha"
-
-            elif 'ktm' in title:
-                item.brand = "ktm"
-                recent_item.brand = "ktm"
-                make = "ktm"
-                 
-            elif 'dr-z' in title or 'drz' in title :
-                item.brand = "DR-Z"
-                recent_item.brand = "DR-Z"
-                make = "suzuki"
-            elif 'rmz' in title:
-                item.brand = "RM-Z"
-                recent_item.brand = "RM-Z"
-                make = "suzuki"
-            elif 'rm' in title:
-                item.brand = "RM"
-                recent_item.brand = "RM"
-                make = "suzuki"
-            elif 'suzuki' in title:
-                item.brand = "suzuki"
-                recent_item.brand = "suzuki"
-                make = "suzuki"
-           
-            elif 'klx' in title:
-                item.brand = "KLX"
-                recent_item.brand = "KLX"
-                make = "kawasaki"
-            elif 'kx' in title:
-                item.brand = "KX"
-                recent_item.brand = "KX"
-                make = "kawasaki"
-            elif 'kawasaki' in title:
-                item.brand = "kawasaki"
-                recent_item.brand = "kawasaki"
-                make = "kawasaki"
-
-            elif 'husqvarna' in title: 
-                item.brand = "husqvarna"
-                recent_item.brand = "husqvarna"
-                make = None
-            
-            else:
-                item.brand = "other"
-                recent_item.brand = "other"
-                make = None
-
-            if re.match(r'\b(19|20)\d{2}\b', title):
-                year = re.match(r'\b(19|20)\d{2}\b', title)
-            
-                item.year = str(year)[38:42]
-                recent_item.year = str(year)[38:42]              
-
-                i = str(title).find(str(item.year))
-                sub = str(title)[i + 4:]
+                end1 = str(item).find('memberId":')
+                ksl_id = str(item)[start1 + 6 : end1 - 2]
                 
-            else:
-                if re.match(r'\b(19|20)\d{2}\b', description):
-                    year = re.match(r'\b(19|20)\d{2}\b', description)                    
-                    item.year = str(year)[38:42]
-                    recent_item.year = str(year)[38:42] 
+                start1 = str(item).find('displayTime":')
+                s = str(item)[start1:]
+                end1 = str(item).find('modifyTime":')
+                displayTime = str(item)[start1 + 14 : end1 - 4]
 
+                start1 = str(item).find('category":')
+                s = str(item)[start1:]
+                end1 = str(item).find('subCategory":')
+                category = str(item)[start1 + 11 : end1 - 3]
+
+                start1 = str(item).find('subCategory":')
+                s = str(item)[start1:]
+                end1 = str(item).find('price":')
+                subCategory = str(item)[start1 + 14 : end1 - 3]
+
+                start1 = str(item).find('price":')
+                s = str(item)[start1:]
+                end1 = str(item).find('title":')
+                price = str(item)[start1 + 7 : end1 - 2]
+
+                start1 = str(item).find('title":')
+                s = str(item)[start1:]
+                end1 = str(item).find('description":')
+                title = str(item)[start1 + 8 : end1 - 3]    
+
+                start1 = str(item).find('city":')
+                s = str(item)[start1:]
+                end1 = str(item).find('state":')
+                city = str(item)[start1 + 7 : end1 - 3]
+
+                start1 = str(item).find('state":')
+                s = str(item)[start1:]
+                end1 = str(item).find('zip":')
+                state = str(item)[start1 + 8 : end1 - 3]
+
+                start1 = str(item).find('name":')
+                s = str(item)[start1:]
+                end1 = str(item).find('homePhone":')
+                name = str(item)[start1 + 7 : end1 - 3]
+
+                start1 = str(item).find('favorited":')
+                s = str(item)[start1:]
+                end1 = str(item).find('listingType":')
+                favorited = str(item)[start1 + 11 : end1 - 2]
+
+                start1 = str(item).find('description":')
+                s = str(item)[start1:]
+                end1 = str(item).find('marketType":')
+                description = str(item)[start1 + 14 : end1 - 3]
+                
+                if str(item).find('cellPhone":'):
+                    start1 = str(item).find('cellPhone":')
+                    s = str(item)[start1:]
+                    end1 = str(item).find('email":')
+                    cellPhone = str(item)[start1 + 12 : end1 - 3]
+                else:
+                    cellPhone = None
+                # if len(cellPhone) > 14:
+                #     cellPhone = None
+
+                start1 = str(item).find('description":')
+                s = str(item)[start1:]
+                end1 = str(item).find('marketType":')
+                description = str(item)[start1 + 14 : end1 - 3]
+                
+                item = hmod.Ad()
+                item.ksl_id = ksl_id
+                item.displayTime = displayTime
+                item.category = category
+                item.subCategory = subCategory
+                item.price = price
+                item.title = title
+                item.city = city
+                item.state = state
+                item.name = name
+                item.cellPhone = cellPhone
+                item.favorited = favorited
+                item.description = description
+
+                recent_item = hmod.RecentAds()
+                recent_item.ksl_id = ksl_id
+                recent_item.displayTime = displayTime
+                recent_item.category = category
+                recent_item.subCategory = subCategory
+                recent_item.price = price
+                recent_item.title = title
+                recent_item.city = city
+                recent_item.state = state
+                recent_item.name = name
+                recent_item.cellPhone = cellPhone
+                recent_item.favorited = favorited
+                recent_item.description = description
+
+                #convert title to lowercase before checking!! duh dude
+                title = title.lower()
+
+                if 'crf' in title:
+                    item.brand = "CRF"
+                    recent_item.brand = "CRF"
+                    make = "honda"
+                elif 'cr' in title: 
+                    item.brand = "CR"
+                    recent_item.brand = "CR"
+                    make = "honda"
+                elif 'xr' in title:
+                    item.brand = "XR"
+                    recent_item.brand = "XR"
+                    make = "honda"
+                elif 'honda' in title:   
+                    item.brand = 'honda'
+                    recent_item.brand = 'honda' 
+                    make = "honda"
+                        
+                elif 'yz' in title:
+                    item.brand = "YZ"
+                    recent_item.brand = "YZ"
+                    make = "yamaha"
+                elif 'tt-r' in title or 'ttr' in title or 'tt r' in title:
+                    item.brand = "TTR"
+                    recent_item.brand = "TTR"
+                    make = "yamaha"
+                elif 'wr' in title:
+                    item.brand = "WR"
+                    recent_item.brand = "WR"
+                    make = "yamaha"
+                elif 'pw' in title:
+                    item.brand = "PW"
+                    recent_item.brand = "PW"
+                    make = "yamaha"
+                elif 'tw' in title:
+                    item.brand = "TW"
+                    recent_item.brand = "TW"
+                    make = "yamaha"
+                elif 'yamaha' in title:
+                    item.brand = "yamaha"
+                    recent_item.brand = "yamaha"
+                    make = "yamaha"
+
+                elif 'ktm' in title:
+                    item.brand = "ktm"
+                    recent_item.brand = "ktm"
+                    make = "ktm"
+                    
+                elif 'dr-z' in title or 'drz' in title :
+                    item.brand = "DR-Z"
+                    recent_item.brand = "DR-Z"
+                    make = "suzuki"
+                elif 'rmz' in title:
+                    item.brand = "RM-Z"
+                    recent_item.brand = "RM-Z"
+                    make = "suzuki"
+                elif 'rm' in title:
+                    item.brand = "RM"
+                    recent_item.brand = "RM"
+                    make = "suzuki"
+                elif 'suzuki' in title:
+                    item.brand = "suzuki"
+                    recent_item.brand = "suzuki"
+                    make = "suzuki"
+            
+                elif 'klx' in title:
+                    item.brand = "KLX"
+                    recent_item.brand = "KLX"
+                    make = "kawasaki"
+                elif 'kx' in title:
+                    item.brand = "KX"
+                    recent_item.brand = "KX"
+                    make = "kawasaki"
+                elif 'kawasaki' in title:
+                    item.brand = "kawasaki"
+                    recent_item.brand = "kawasaki"
+                    make = "kawasaki"
+
+                elif 'husqvarna' in title: 
+                    item.brand = "husqvarna"
+                    recent_item.brand = "husqvarna"
+                    make = None
+                
+                else:
+                    item.brand = "other"
+                    recent_item.brand = "other"
+                    make = None
+
+                year = find_year(title, description)
+                item.year = year
+                recent_item.year = year
+
+                # if re.match(r'\b(19|20)\d{2}\b', title):
+                #     year = re.match(r'\b(19|20)\d{2}\b', title)
+                
+                #     item.year = str(year)[38:42]
+                #     recent_item.year = str(year)[38:42]              
+
+                #     i = str(title).find(str(item.year))
+                #     sub = str(title)[i + 4:]
+
+                if year is None:
+                    sub = str(title)                
+
+                else:
                     i = str(title).find(str(item.year))
                     sub = str(title)[i + 4:]
-                else:
-                    sub = str(title)
-                    item.year = None 
-                    recent_item.year = None     
-
-
-            size = find_size(sub)
-            item.size = size
-            recent_item.size = size
-
-            item.make = make
-            recent_item.make = make
-
-            model = None
-
-            if make != None and (item.brand != None and item.brand != 'honda' and item.brand != 'kawasaki' and item.brand != 'suzuki' and item.brand != 'yamaha' and item.brand != 'husqvarna' and item.brand != 'other'): #is not None?
-                
-                model = find_model(make, title, item.brand)
-                
-                if size > 0:
-                    if model != None:
-                        # if make == "honda":
-                        #     model = str(item.size) + 'f' #item.size can't be 0
-                        # #elif model == "yamaha":
-                        if (make != "ktm"):
-                            model = item.brand + model
-                        item.model = model
-                        recent_item.model = model
                     
-            if make != None and model != None and item.year != None:
-                # url = 'https://www.kbb.com/motorcycles/' + make + '/' + model + '/' + item.year + '/?pricetype=trade-in'
-                # print(url)
-                headers = {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
-                }
+                # else:
+                #     if re.match(r'\b(19|20)\d{2}\b', description):
+                #         year = re.match(r'\b(19|20)\d{2}\b', description)                    
+                #         item.year = str(year)[38:42]
+                #         recent_item.year = str(year)[38:42] 
 
-                with requests.Session() as sesh:     
-                    r = sesh.get('https://www.kbb.com/motorcycles/' + make + '/' + model + '/' + item.year + '/?pricetype=trade-in', headers=headers) #make/model/year
-                    soup = BeautifulSoup(r.content, 'html.parser')
-
-                start = str(soup).find('msrp')
-                sub3 = str(soup)[start:]
-                
-                end = str(sub3).find('options')
-                sub4 = str(sub3)[:end]
-
-                start = str(sub4).find('tradeIn')
-                sub5 = str(sub4)[start:]
-                
-                kbb_value = str(sub5)[9 : -2]           
-
-                if kbb_value != None and kbb_value != "":
-
-                    item.kbb_value = kbb_value
-                    recent_item.kbb_value = kbb_value
-
-                    item.difference = Decimal(price) - Decimal(kbb_value)
-                    recent_item.difference = Decimal(price) - Decimal(kbb_value)
+                #         i = str(title).find(str(item.year))
+                #         sub = str(title)[i + 4:]
+                #     else:
+                #         sub = str(title)
+                #         item.year = None 
+                #         recent_item.year = None     
 
 
-            if item.year != None and item.brand != "other": 
-                if not hmod.Ad.objects.filter(price = Decimal(item.price), city = item.city, state = item.state, year = item.year, brand = item.brand, size = int(item.size)):
-                    item.save()   
-            if recent_item.year != None and recent_item.brand != "other": 
-                recent_item.save()
-                # if recent_item.kbb_value != None:
-                #     bikes.append(recent_item)
+                size = find_size(sub)
+                item.size = size
+                recent_item.size = size
+
+                item.make = make
+                recent_item.make = make
+
+                model = None
+
+                if make != None and (item.brand != None and item.brand != 'honda' and item.brand != 'kawasaki' and item.brand != 'suzuki' and item.brand != 'yamaha' and item.brand != 'husqvarna' and item.brand != 'other'): #is not None?
+                    
+                    model = find_model(make, title, item.brand)
+                    
+                    if size > 0:
+                        if model != None:
+                            # if make == "honda":
+                            #     model = str(item.size) + 'f' #item.size can't be 0
+                            # #elif model == "yamaha":
+                            if (make != "ktm"):
+                                model = item.brand + model
+                            item.model = model
+                            recent_item.model = model
+                        
+                if make != None and model != None and item.year != None:
+                    # url = 'https://www.kbb.com/motorcycles/' + make + '/' + model + '/' + item.year + '/?pricetype=trade-in'
+                    # print(url)
+                    headers = {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
+                    }
+
+                    with requests.Session() as sesh:     
+                        r = sesh.get('https://www.kbb.com/motorcycles/' + make + '/' + model + '/' + str(item.year) + '/?pricetype=trade-in', headers=headers) #make/model/year
+                        soup = BeautifulSoup(r.content, 'html.parser')
+
+                    start = str(soup).find('msrp')
+                    sub3 = str(soup)[start:]
+                    
+                    end = str(sub3).find('options')
+                    sub4 = str(sub3)[:end]
+
+                    start = str(sub4).find('tradeIn')
+                    sub5 = str(sub4)[start:]
+                    
+                    kbb_value = str(sub5)[9 : -2]           
+
+                    if kbb_value != None and kbb_value != "":
+
+                        item.kbb_value = kbb_value
+                        recent_item.kbb_value = kbb_value
+
+                        item.difference = Decimal(price) - Decimal(kbb_value)
+                        recent_item.difference = Decimal(price) - Decimal(kbb_value)
 
 
-    deals = hmod.RecentAds.objects.all().exclude(kbb_value = None).order_by('difference')
+                if item.year != None and item.brand != "other": 
+                    if not hmod.Ad.objects.filter(price = Decimal(item.price), city = item.city, state = item.state, year = item.year, brand = item.brand, size = int(item.size)):
+                        item.save()   
+                if recent_item.year != None and recent_item.brand != "other": 
+                    recent_item.save()
+                    # if recent_item.kbb_value != None:
+                    #     bikes.append(recent_item)
 
 
-    context = {
-        'deals': deals,
-        # 'bikes': bikes,
-    }
-    return request.dmp.render('deals.html', context)
+        deals = hmod.RecentAds.objects.all().exclude(kbb_value = None).order_by('difference')
+
+
+        context = {
+            'deals': deals,
+            # 'bikes': bikes,
+        }
+        return request.dmp.render('deals.html', context)
+    
+    else:
+        return HttpResponseRedirect('/homepage/login/')
 
 
 
@@ -654,5 +671,69 @@ def find_size(sub):
     else:
         return 0      
 
+def find_year(title, description):
+
+    if '1990' in title or '1990' in description:
+        return 1990
+    elif '1991' in title or '1991' in description:
+        return 1991
+    elif '1992' in title or '1992' in description:
+        return 1992
+    elif '1993' in title or '1993' in description:
+        return 1993
+    elif '1994' in title or '1994' in description:
+        return 1994
+    elif '1995' in title or '1995' in description:
+        return 1995
+    elif '1996' in title or '1996' in description:
+        return 1996
+    elif '1997' in title or '1997' in description:
+        return 1997
+    elif '1998' in title or '1998' in description:
+        return 1998
+    elif '1999' in title or '1999' in description:
+        return 1999
+    elif '2000' in title or '2000' in description:
+        return 2000
+    elif '2001' in title or '2001' in description:
+        return 2001
+    elif '2002' in title or '2002' in description:
+        return 2002
+    elif '2003' in title or '2003' in description:
+        return 2003
+    elif '2004' in title or '2004' in description:
+        return 2004
+    elif '2005' in title or '2005' in description:
+        return 2005
+    elif '2006' in title or '2006' in description:
+        return 2006
+    elif '2007' in title or '2007' in description:
+        return 2007
+    elif '2008' in title or '2008' in description:
+        return 2008
+    elif '2009' in title or '2009' in description:
+        return 2009
+    elif '2010' in title or '2010' in description:
+        return 2010
+    elif '2011' in title or '2011' in description:
+        return 2011
+    elif '2012' in title or '2012' in description:
+        return 2012
+    elif '2013' in title or '2013' in description:
+        return 2013
+    elif '2014' in title or '2014' in description:
+        return 2014
+    elif '2015' in title or '2015' in description:
+        return 2015
+    elif '2016' in title or '2016' in description:
+        return 2016
+    elif '2017' in title or '2017' in description:
+        return 2017
+    elif '2018' in title or '2018' in description:
+        return 2018
+    elif '2019' in title or '2019' in description:
+        return 2019
+    else:
+        return None
 
 

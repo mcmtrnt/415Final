@@ -8,58 +8,65 @@ import requests
 from django import forms
 import json
 from decimal import Decimal
+from django.http import HttpResponseRedirect
 
 @view_function
 def process_request(request):
 
-    if request.method == 'POST':
-        form = CalculatorForm(request.POST)
-        if form.is_valid():
+    if request.user.is_authenticated:
 
-            year = form.cleaned_data.get('Year')
-            size = form.cleaned_data.get('Size')
-            description = form.cleaned_data.get('Description')
-            make = form.cleaned_data.get('Make')
-            model = form.cleaned_data.get('Model')
-            
+        if request.method == 'POST':
+            form = CalculatorForm(request.POST)
+            if form.is_valid():
 
-            url = "https://ussouthcentral.services.azureml.net/workspaces/fc99097f01f349e2b6c076486b11bd6a/services/06579f005e044a81bd6f06e43252afd0/execute"
+                year = form.cleaned_data.get('Year')
+                size = form.cleaned_data.get('Size')
+                description = form.cleaned_data.get('Description')
+                make = form.cleaned_data.get('Make')
+                model = form.cleaned_data.get('Model')
+                
+                make = make.lower()
 
-            querystring = {"api-version":"2.0","details":"true"}
+                url = "https://ussouthcentral.services.azureml.net/workspaces/fc99097f01f349e2b6c076486b11bd6a/services/06579f005e044a81bd6f06e43252afd0/execute"
 
-            payload = "{\r\n  \"Inputs\": {\r\n    \"input1\": {\r\n      \"ColumnNames\": [\r\n        \"Price\",\r\n        \"Year\",\r\n        \"Size\",\r\n        \"Description\",\r\n        \"make\",\r\n        \"model\",\r\n        \"NumUniqueNgrams\",\r\n        \"NGramsString\",\r\n        \"Preprocessed Description.[yoshi]\",\r\n        \"Preprocessed Description.[fall]\",\r\n        \"Preprocessed Description.[kx450f]\",\r\n        \"Preprocessed Description.[crf_run]\",\r\n        \"Preprocessed Description.[run_excellent]\"\r\n      ],\r\n      \"Values\": [\r\n        [\r\n          \"0\",\r\n          \"" + year + "\",\r\n          \"" + size + "\",\r\n          \"" + description + "\",\r\n          \"" + make + "\",\r\n          \"" + model + "\",\r\n          \"2\",\r\n          \"value\",\r\n          \"0\",\r\n          \"0\",\r\n          \"0\",\r\n          \"0\",\r\n          \"0\"\r\n        ]\r\n      ]\r\n    }\r\n  },\r\n  \"GlobalParameters\": {}\r\n}"
-            headers = {
-                'Authorization': "Bearer Hz+fKMYqeOM2FUrTIF0l9Zk5DiA13saWg3HO8XdXJ/3W6FQsfyALqINsRU8loMLwBS8s00IWzLZgLvArZwKcGg==",
-                'Content-Type': "application/json",
-                'cache-control': "no-cache",
-                'Postman-Token': "1ba04d53-9e44-4f5e-b0c4-454e483cc98b"
-                }
+                querystring = {"api-version":"2.0","details":"true"}
 
-            response = requests.request("POST", url, data=payload, headers=headers, params=querystring)
+                payload = "{\r\n  \"Inputs\": {\r\n    \"input1\": {\r\n      \"ColumnNames\": [\r\n        \"Price\",\r\n        \"Year\",\r\n        \"Size\",\r\n        \"Description\",\r\n        \"make\",\r\n        \"model\",\r\n        \"NumUniqueNgrams\",\r\n        \"NGramsString\",\r\n        \"Preprocessed Description.[yoshi]\",\r\n        \"Preprocessed Description.[fall]\",\r\n        \"Preprocessed Description.[kx450f]\",\r\n        \"Preprocessed Description.[crf_run]\",\r\n        \"Preprocessed Description.[run_excellent]\"\r\n      ],\r\n      \"Values\": [\r\n        [\r\n          \"0\",\r\n          \"" + year + "\",\r\n          \"" + size + "\",\r\n          \"" + description + "\",\r\n          \"" + make + "\",\r\n          \"" + model + "\",\r\n          \"2\",\r\n          \"value\",\r\n          \"0\",\r\n          \"0\",\r\n          \"0\",\r\n          \"0\",\r\n          \"0\"\r\n        ]\r\n      ]\r\n    }\r\n  },\r\n  \"GlobalParameters\": {}\r\n}"
+                headers = {
+                    'Authorization': "Bearer Hz+fKMYqeOM2FUrTIF0l9Zk5DiA13saWg3HO8XdXJ/3W6FQsfyALqINsRU8loMLwBS8s00IWzLZgLvArZwKcGg==",
+                    'Content-Type': "application/json",
+                    'cache-control': "no-cache",
+                    'Postman-Token': "1ba04d53-9e44-4f5e-b0c4-454e483cc98b"
+                    }
 
-            start = str(response.text).find('Values":[["')
-            s = str(response.text)[start:]            
-            end = str(response.text).find(']]')
-            values = str(response.text)[start + 11 : end - 1]
-            values = values.replace("\"", "")
-            valueList = values.split(',')
+                response = requests.request("POST", url, data=payload, headers=headers, params=querystring)
 
-            value = valueList[-1]
-            value = round(Decimal(value), 2)
+                start = str(response.text).find('Values":[["')
+                s = str(response.text)[start:]            
+                end = str(response.text).find(']]')
+                values = str(response.text)[start + 11 : end - 1]
+                values = values.replace("\"", "")
+                valueList = values.split(',')
+
+                value = valueList[-1]
+                value = round(Decimal(value), 2)
+
+            else:
+                value = ""
 
         else:
+            form = CalculatorForm()
             value = ""
 
+        context = {
+            'form': form, 
+            'value': value,
+        }
+
+        return request.dmp.render('calculator.html', context)
+
     else:
-        form = CalculatorForm()
-        value = ""
-
-    context = {
-        'form': form, 
-        'value': value,
-    }
-
-    return request.dmp.render('calculator.html', context)
+        return HttpResponseRedirect('/homepage/login/')
 
 
 

@@ -25,8 +25,10 @@ body {
     color: #cccccc;
   }
   
-  li {
+  .errorlist {
       color: red;
+      list-style-type: none;
+      text-indent: -2em;
   }
   
   
