@@ -5,7 +5,4 @@
     <p>First Name: ${ request.user.first_name }</p>
     <p>Last Name: ${ request.user.last_name }</p>
     
-    %if request.user.has_perm('homepage.view_ad'):
-        <a class="btn btn-outline-danger" href="/homepage/cancel/">Cancel My Subscription<span class="sr-only">(current)</span></a>
-    %endif
 </%block>

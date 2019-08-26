@@ -13,49 +13,56 @@
         <div class="col-md-12">
 
     <div class="content">
-        %if request.user.has_perm('homepage.view_ad'):
-            <table class="table table-striped table-bordered table-hover">
-                <caption style="caption-side: top">Click a row to be redirected to the item's ad</caption>
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Year</th>
-                        <th>Make</th>
-                        <th>Model</th>
-                        <th>Price</th>
-                        <th>KBB</th>
-                        <th>Difference</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    %for i in range (len(deals)):  
-                        %if deals[i].difference < 0:
+        
+        <table class="table table-striped table-bordered table-hover">
+            <caption style="caption-side: top">Click a row to be redirected to the item's ad</caption>
+            <thead class="thead-dark">
+                <tr>
+                    <th>Location</th>
+                    <th>Year</th>
+                    <th>Make</th>
+                    <th>Model</th>
+                    <th>Price</th>
+                    <th>KBB</th>
+                    <th>Difference</th>
+                </tr>
+            </thead>
+            <tbody>
+                %for i in range (len(deals)):  
+                    %if deals[i].difference < 0:
+                        %if request.user.has_perm('homepage.view_ad'):
                             <tr class="table-success clickable-row" data-href='https://classifieds.ksl.com/listing/${ deals[i].ksl_id }'>
-                        %else:       
+                        %else:
                             <tr class='clickable-row' data-href='https://classifieds.ksl.com/listing/${ deals[i].ksl_id }'>
-                        %endif                                                
-                            <td>${ deals[i].year }</td>                        
-                            <td>${ deals[i].make }</td>
-                            <td>${ deals[i].model }</td>               
-                            <td>${ deals[i].price }</td>
-                            <td>${ deals[i].kbb_value }.00</td>               
-                            <td>${ deals[i].difference }</td>
-                        </tr>          
-                    %endfor
-                </tbody>
+                        %endif
+                    %else:       
+                        <tr class='clickable-row' data-href='https://classifieds.ksl.com/listing/${ deals[i].ksl_id }'>
+                    %endif    
+                    %if request.user.has_perm('homepage.view_ad'):    
+                        <td>${deals[i].city}</td>                                          
+                        <td>${ deals[i].year }</td>     
+                    %else:
+                        <td>X</td>
+                        <td>X</td>
+                    %endif
+                        <td>${ deals[i].make }</td>
+                        <td>${ deals[i].model }</td>               
+                        <td>${ deals[i].price }</td>
+                        <td>${ deals[i].kbb_value }.00</td>   
+                    %if request.user.has_perm('homepage.view_ad'):            
+                        <td>${ deals[i].difference }</td>
+                    %else:
+                        <td>X</td>
+                    %endif
+                    </tr>          
+                %endfor
+            </tbody>
 
-            </table>
-        %else:     
-            <div class="wrapper">
-                You must purchase the subscription to view deals.
-                <a class="btn btn-warning" href="/homepage/checkout/" role="button">Purchase Subscription</a>
-            </div> 
-        %endif  
+        </table>
 
     </div>
 
 </div>
-
-<!-- <div class="col-md-2">Hi</div> -->
 
 </div>
 

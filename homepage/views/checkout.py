@@ -17,12 +17,12 @@ def process_request(request):
         if form.is_valid():
 
             try:
-                # charge = stripe.Charge.create(
-                #     amount= 2000, 
-                #     currency='usd',
-                #     description='Charge for pro account',
-                #     source=form.cleaned_data.get('stripeToken'),
-                # )
+                charge = stripe.Charge.create(
+                    amount= 1000, 
+                    currency='usd',
+                    description='Charge for pro account',
+                    source=form.cleaned_data.get('stripeToken'),
+                )
 
                 user = User.objects.get(id = request.user.id)
                 user.groups.add(pmod.Group.objects.get(name='Pro')) #add user to the pro group
@@ -31,28 +31,28 @@ def process_request(request):
 
                 pro = hmod.Pros()
                 pro.user_id = user.id
-                #pro.charge_id = charge['id']  #record the sale
+                pro.charge_id = charge['id']  #record the sale
 
-                customer = stripe.Customer.create(
-                    source=form.cleaned_data.get('stripeToken'),
-                    name = user.first_name
-                )              
+                # customer = stripe.Customer.create(
+                #     source=form.cleaned_data.get('stripeToken'),
+                #     name = user.first_name
+                # )              
 
-                pro.stripe_customer_id = customer['id'] 
+                # pro.stripe_customer_id = customer['id'] 
 
-                plan = hmod.Subscription.objects.get(id = 1)
+                # plan = hmod.Subscription.objects.get(id = 1)
 
-                sub = stripe.Subscription.create(
-                    customer= pro.stripe_customer_id,
-                    items=[
-                        {
-                        "plan": plan.plan_id,
-                        "quantity": 1,                       
-                        },
-                    ],                    
-                )
+                # sub = stripe.Subscription.create(
+                #     customer= pro.stripe_customer_id,
+                #     items=[
+                #         {
+                #         "plan": plan.plan_id,
+                #         "quantity": 1,                       
+                #         },
+                #     ],                    
+                # )
            
-                pro.subscription_id = sub['id']
+                #pro.subscription_id = sub['id']
                 pro.save()
                 
 

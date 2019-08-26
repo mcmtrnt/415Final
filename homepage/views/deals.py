@@ -22,11 +22,21 @@ def process_request(request):
 
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
-        }
+        }        
 
         with requests.Session() as s:
             r = s.get('https://classifieds.ksl.com/s/Recreational+Vehicles/Motorcycles,+Dirt+Bikes+Used', headers=headers)
             soup = BeautifulSoup(r.content, 'html.parser')
+
+            # r = s.get('https://classifieds.ksl.com/search/index?page=1', headers=headers)
+            # pie = BeautifulSoup(r.content, 'html.parser')
+
+            # start = str(pie).find('listings:')
+            # sub3 = str(pie)[start + 11:]
+
+            # end = str(sub3).find('}]')
+            # sub4 = str(sub3)[:end]
+
 
             start = str(soup).find('listings:')
             sub1 = str(soup)[start + 11:]
@@ -34,9 +44,10 @@ def process_request(request):
             end = str(sub1).find('}]')
             sub2 = str(sub1)[:end]
 
-            itemList = sub2.split('}')  #this is a list of all the items!
+            # sub2 = str(sub2) + str(sub4)
 
-            # bikes = []
+            itemList = sub2.split('}') 
+
             
             for item in itemList:
 
@@ -109,7 +120,12 @@ def process_request(request):
                 s = str(item)[start1:]
                 end1 = str(item).find('marketType":')
                 description = str(item)[start1 + 14 : end1 - 3]
-                
+
+                start1 = str(item).find('emailCanonical')
+                s = str(item)[start1:]
+                end1 = str(s).find(',')
+                email = str(s)[17: end1-1]
+
                 item = hmod.Ad()
                 item.ksl_id = ksl_id
                 item.displayTime = displayTime
@@ -123,6 +139,7 @@ def process_request(request):
                 item.cellPhone = cellPhone
                 item.favorited = favorited
                 item.description = description
+                item.email = email
 
                 recent_item = hmod.RecentAds()
                 recent_item.ksl_id = ksl_id
@@ -137,6 +154,7 @@ def process_request(request):
                 recent_item.cellPhone = cellPhone
                 recent_item.favorited = favorited
                 recent_item.description = description
+                recent_item.email = email
 
                 #convert title to lowercase before checking!! duh dude
                 title = title.lower()
@@ -324,8 +342,10 @@ def process_request(request):
                     # if recent_item.kbb_value != None:
                     #     bikes.append(recent_item)
 
-
-        deals = hmod.RecentAds.objects.all().exclude(kbb_value = None).order_by('difference')
+        if request.user.has_perm('homepage.view_ad'):
+            deals = hmod.RecentAds.objects.all().exclude(kbb_value = None).order_by('difference')
+        else:
+            deals = hmod.RecentAds.objects.all().exclude(kbb_value = None)
 
 
         context = {
@@ -346,6 +366,7 @@ def find_model(make, my_title, my_brand): #description
     #if make == "honda": # does this need to be brand specific? 
     
     #450 SE for yahamas 2012 or 13?
+
     if '450x' in title or '450 x' in title:
         return '450x'
     elif '450fx' in title or '450 fx' in title:
@@ -356,6 +377,8 @@ def find_model(make, my_title, my_brand): #description
         else:
             return '450f'
     elif '450r' in title or '450 r' in title:
+        if(make == 'suzuki'):
+            return '450'
         return '450r'
     elif '450sxf' in title or '450 sxf' in title or '450 sx-f' in title:
         return '450-sx-f'
@@ -365,6 +388,8 @@ def find_model(make, my_title, my_brand): #description
         return '450-xc'
     elif '450exc' in title or '450 exc' in title:
         return '450-exc'
+    elif 'kx450' in title or 'kx 450' in title:
+        return '450d-kx450f'
     elif '450' in title:
         if(make == 'honda'):
             # if(brand == 'xr' or brand == 'cr'):
@@ -395,7 +420,9 @@ def find_model(make, my_title, my_brand): #description
                 return '400f'
         else:
             return '400'  
-    elif '350sxf' in title or '300 sxf' in title or '300 sx-f' in title: 
+    elif '350sxf' in title or '350 sxf' in title or '350 sx-f' in title: 
+        return '350-sx-f'
+    elif '350sx' in title or '350 sx' in title or '350-sx' in title: 
         return '350-sx-f'
     elif '300xc' in title or '300 xc' in title: 
         return '300-xc'
@@ -524,6 +551,8 @@ def find_model(make, my_title, my_brand): #description
         if(make == 'yamaha'):
             return '90e'
         return '90'
+    elif 'kx 85' in title or 'kx85' in title:
+        return '85-a1'
     elif '85xc' in title or '85 xc' in title:
         return '85-xc'
     elif '85r' in title or '85 r' in title:
@@ -646,6 +675,8 @@ def find_size(sub):
         return 200
     elif '150' in sub:
         return 150
+    elif '140' in sub:
+        return 140
     elif '125' in sub:
         return 125
     elif '110' in sub:
@@ -675,65 +706,65 @@ def find_year(title, description):
 
     if '1990' in title or '1990' in description:
         return 1990
-    elif '1991' in title or '1991' in description:
+    elif '1991' in title or '91' in title or '1991' in description:
         return 1991
-    elif '1992' in title or '1992' in description:
+    elif '1992' in title or '92' in title or '1992' in description:
         return 1992
-    elif '1993' in title or '1993' in description:
+    elif '1993' in title or '93' in title or '1993' in description:
         return 1993
-    elif '1994' in title or '1994' in description:
+    elif '1994' in title or '94' in title or '1994' in description:
         return 1994
-    elif '1995' in title or '1995' in description:
+    elif '1995' in title or '95' in title or '1995' in description:
         return 1995
-    elif '1996' in title or '1996' in description:
+    elif '1996' in title or '96' in title or '1996' in description:
         return 1996
-    elif '1997' in title or '1997' in description:
+    elif '1997' in title or '97' in title or '1997' in description:
         return 1997
-    elif '1998' in title or '1998' in description:
+    elif '1998' in title or '98' in title or '1998' in description:
         return 1998
-    elif '1999' in title or '1999' in description:
+    elif '1999' in title or '99' in title or '1999' in description:
         return 1999
     elif '2000' in title or '2000' in description:
         return 2000
     elif '2001' in title or '2001' in description:
         return 2001
-    elif '2002' in title or '2002' in description:
+    elif '2002' in title or '02' in title or '2002' in description:
         return 2002
-    elif '2003' in title or '2003' in description:
+    elif '2003' in title or '03' in title or '2003' in description:
         return 2003
-    elif '2004' in title or '2004' in description:
+    elif '2004' in title or '04' in title or '2004' in description:
         return 2004
-    elif '2005' in title or '2005' in description:
+    elif '2005' in title or '05' in title or '2005' in description:
         return 2005
-    elif '2006' in title or '2006' in description:
+    elif '2006' in title or '06' in title or '2006' in description:
         return 2006
-    elif '2007' in title or '2007' in description:
+    elif '2007' in title or '07' in title or '2007' in description:
         return 2007
-    elif '2008' in title or '2008' in description:
+    elif '2008' in title or '08' in title or '2008' in description:
         return 2008
-    elif '2009' in title or '2009' in description:
+    elif '2009' in title or '09' in title or '2009' in description:
         return 2009
     elif '2010' in title or '2010' in description:
         return 2010
     elif '2011' in title or '2011' in description:
         return 2011
-    elif '2012' in title or '2012' in description:
+    elif '2012' in title or '12' in title or '2012' in description:
         return 2012
-    elif '2013' in title or '2013' in description:
+    elif '2013' in title or '13' in title or '2013' in description:
         return 2013
-    elif '2014' in title or '2014' in description:
+    elif '2014' in title or '14' in title or '2014' in description:
         return 2014
-    elif '2015' in title or '2015' in description:
+    elif '2015' in title or '15' in title or '2015' in description:
         return 2015
-    elif '2016' in title or '2016' in description:
+    elif '2016' in title or '16' in title or '2016' in description:
         return 2016
-    elif '2017' in title or '2017' in description:
+    elif '2017' in title or '17' in title or '2017' in description:
         return 2017
-    elif '2018' in title or '2018' in description:
+    elif '2018' in title or '18' in title or '2018' in description:
         return 2018
     elif '2019' in title or '2019' in description:
         return 2019
     else:
-        return None
+        return 0000
 
 

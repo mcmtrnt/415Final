@@ -5,7 +5,7 @@ STOP_RENDERING = runtime.STOP_RENDERING
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 10
-_modified_time = 1560005808.5050335
+_modified_time = 1560476973.0733945
 _enable_loop = True
 _template_filename = 'C:/Users/Trent/scraper/homepage/templates/success.html'
 _template_uri = 'success.html'
@@ -49,7 +49,7 @@ def render_content(context,**pageargs):
         def content():
             return render_content(context)
         __M_writer = context.writer()
-        __M_writer('\r\n    <h2>Receipt</h2>\r\n    <p>Thank you for signing up! Purchase a subscription to view deals!</p>\r\n    <a class="btn btn-warning" href="/homepage/checkout/">Purchase Subscription<span class="sr-only">(current)</span></a>\r\n\r\n')
+        __M_writer('\r\n    <h2>Receipt</h2>\r\n    <p>Thank you for signing up! You now have access to the free account!</p>\r\n    <a class="btn btn-warning" href="/homepage/checkout/">Purchase Pro Account<span class="sr-only">(current)</span></a>\r\n\r\n')
         return ''
     finally:
         context.caller_stack._pop_frame()

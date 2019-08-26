@@ -8,7 +8,7 @@ class Ad(models.Model):
     displayTime = models.DateTimeField(null=True, default=None)
     category = models.TextField()
     subCategory = models.TextField()
-    price = models.DecimalField(null=True, max_digits=7, decimal_places=2, default=Decimal(0))
+    price = models.DecimalField(null=True, max_digits=9, decimal_places=2, default=Decimal(0))
     title = models.TextField()
     description = models.TextField(null=True)
     year = models.IntegerField(null=True)
@@ -23,7 +23,7 @@ class Ad(models.Model):
     make = models.TextField(null=True)
     model = models.TextField(null=True)
     difference = models.DecimalField(null=True, max_digits=7, decimal_places=2, default=Decimal(0))
-    
+    email = models.TextField(null=True)
 
 
 class RecentAds(models.Model):
@@ -31,7 +31,7 @@ class RecentAds(models.Model):
     displayTime = models.DateTimeField(null=True, default=None)
     category = models.TextField()
     subCategory = models.TextField()
-    price = models.DecimalField(null=True, max_digits=7, decimal_places=2, default=Decimal(0))
+    price = models.DecimalField(null=True, max_digits=9, decimal_places=2, default=Decimal(0))
     title = models.TextField()
     description = models.TextField(null=True)
     year = models.IntegerField(null=True)
@@ -46,6 +46,7 @@ class RecentAds(models.Model):
     make = models.TextField(null=True)
     model = models.TextField(null=True)
     difference = models.DecimalField(null=True, max_digits=7, decimal_places=2, default=Decimal(0))
+    email = models.TextField(null=True)
 
 class Pros(models.Model):
     user_id = models.TextField(null=True, default=None) 

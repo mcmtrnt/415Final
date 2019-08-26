@@ -34,7 +34,7 @@ def process_request(request):
     #     print(p)
 
     # p = pmod.Permission()
-    # p.codename='view_analytics'
+    # p.codename='view_doctor'
     # p.name='can view analytics'
     # p.content_type=pmod.Permission.objects.get(codename='add_user').content_type
     # p.save()
@@ -59,11 +59,12 @@ def process_request(request):
     #     name='Dirt Bike Deals Subscription',
     #     type='service',
     # )
-    
+    # product = hmod.Subscription.objects.get(id = 1)
+
     # plan = stripe.Plan.create(
     #     nickname="Standard Monthly",
-    #     product= product['id'],
-    #     amount=2000,
+    #     product= product.product_id,
+    #     amount=1000,
     #     currency="usd",
     #     interval="month",
     #     usage_type="licensed",

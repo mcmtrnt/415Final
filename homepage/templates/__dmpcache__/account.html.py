@@ -5,7 +5,7 @@ STOP_RENDERING = runtime.STOP_RENDERING
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 10
-_modified_time = 1560005955.8925235
+_modified_time = 1566830120.6885476
 _enable_loop = True
 _template_filename = 'C:/Users/Trent/scraper/homepage/templates/account.html'
 _template_uri = 'account.html'
@@ -30,10 +30,10 @@ def render_body(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
         __M_locals = __M_dict_builtin(pageargs=pageargs)
+        request = context.get('request', UNDEFINED)
         def content():
             return render_content(context._locals(__M_locals))
         self = context.get('self', UNDEFINED)
-        request = context.get('request', UNDEFINED)
         __M_writer = context.writer()
         __M_writer('\r\n\r\n')
         if 'parent' not in context._data or not hasattr(context._data['parent'], 'content'):
@@ -48,10 +48,10 @@ def render_body(context,**pageargs):
 def render_content(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
+        request = context.get('request', UNDEFINED)
         def content():
             return render_content(context)
         self = context.get('self', UNDEFINED)
-        request = context.get('request', UNDEFINED)
         __M_writer = context.writer()
         __M_writer('\r\n    <p>Username: ')
         __M_writer(django_mako_plus.ExpressionPostProcessor(self)( request.user.username ))
@@ -60,8 +60,6 @@ def render_content(context,**pageargs):
         __M_writer('</p>\r\n    <p>Last Name: ')
         __M_writer(django_mako_plus.ExpressionPostProcessor(self)( request.user.last_name ))
         __M_writer('</p>\r\n    \r\n')
-        if request.user.has_perm('homepage.view_ad'):
-            __M_writer('        <a class="btn btn-outline-danger" href="/homepage/cancel/">Cancel My Subscription<span class="sr-only">(current)</span></a>\r\n')
         return ''
     finally:
         context.caller_stack._pop_frame()
@@ -69,6 +67,6 @@ def render_content(context,**pageargs):
 
 """
 __M_BEGIN_METADATA
-{"filename": "C:/Users/Trent/scraper/homepage/templates/account.html", "uri": "account.html", "source_encoding": "utf-8", "line_map": {"29": 0, "38": 1, "48": 3, "56": 3, "57": 4, "58": 4, "59": 5, "60": 5, "61": 6, "62": 6, "63": 8, "64": 9, "70": 64}}
+{"filename": "C:/Users/Trent/scraper/homepage/templates/account.html", "uri": "account.html", "source_encoding": "utf-8", "line_map": {"29": 0, "38": 1, "48": 3, "56": 3, "57": 4, "58": 4, "59": 5, "60": 5, "61": 6, "62": 6, "68": 62}}
 __M_END_METADATA
 """

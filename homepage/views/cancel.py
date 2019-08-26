@@ -12,9 +12,8 @@ def process_request(request):
 
     pro = hmod.Pros.objects.get(user_id = request.user.id)
     sub = stripe.Subscription.retrieve(pro.subscription_id)
-    stripe.Subscription.delete(sub)
+    stripe.Subscription.delete(stripe.Subscription.retrieve(sub.id))
 
-    #remove from pro group
     user = User.objects.get(id = request.user.id)
     user.groups.remove(pmod.Group.objects.get(name='Pro'))
     user.save()
