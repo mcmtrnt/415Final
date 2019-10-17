@@ -307,10 +307,12 @@ def process_request(request):
                     # url = 'https://www.kbb.com/motorcycles/' + make + '/' + model + '/' + item.year + '/?pricetype=trade-in'
                     # print(url)
                     headers = {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
+                        
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'
                     }
 
-                    with requests.Session() as sesh:     
+                    with requests.Session() as sesh:   
+
                         r = sesh.get('https://www.kbb.com/motorcycles/' + make + '/' + model + '/' + str(item.year) + '/?pricetype=trade-in', headers=headers) #make/model/year
                         soup = BeautifulSoup(r.content, 'html.parser')
 
